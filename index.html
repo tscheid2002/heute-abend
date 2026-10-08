@@ -232,8 +232,24 @@
   }
   .quick:hover { border-color: var(--accent); }
   .map-mini { display: inline-block; margin-top: 6px; font-size: 14px; color: var(--accent); }
-  body.drive-mode .btn[type=submit] { background: #5b5bd6; }
-  @media (prefers-color-scheme: dark) { body.drive-mode .btn[type=submit] { background: #8b8bf0; } }
+  .choice-vorbei { --accent: #2f8f6f; }
+  .choice-eigene { --accent: #b5478a; }
+  body.mode-drive .btn[type=submit] { background: #5b5bd6; }
+  body.mode-vorbei .btn[type=submit] { background: #2f8f6f; }
+  body.mode-eigene .btn[type=submit] { background: #b5478a; }
+  @media (prefers-color-scheme: dark) {
+    .choice-vorbei { --accent: #5cc49f; }
+    .choice-eigene { --accent: #e07ab5; }
+    body.mode-drive .btn[type=submit] { background: #8b8bf0; }
+    body.mode-vorbei .btn[type=submit] { background: #3fa882; }
+    body.mode-eigene .btn[type=submit] { background: #c95a9c; }
+  }
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .choice-grid .choice { margin: 0; padding: 18px 16px; }
+  .choice-grid .choice-title { font-size: 21px; line-height: 1.15; }
+  .choice-grid .choice-sub { font-size: 13.5px; }
+  @media (max-width: 360px) { .choice-grid { grid-template-columns: 1fr; } }
+  .more-btns .btn { margin-top: 0; margin-bottom: 10px; }
 
   /* --- Reiter --- */
   .tabs {
@@ -268,9 +284,13 @@
   .tab.has-data .dot { opacity: .9; }
 
   /* Late Night Drive bekommt nachtblauen Akzent */
+  .panel-vorbei { --accent: #2f8f6f; --accent-soft: #dcf2ea; }
+  .panel-eigene { --accent: #b5478a; --accent-soft: #f8e1ef; }
   .panel-drive { --accent: #5b5bd6; --accent-soft: #e4e4fb; }
   @media (prefers-color-scheme: dark) {
     .panel-drive { --accent: #8b8bf0; --accent-soft: #2b2b52; }
+    .panel-vorbei { --accent: #5cc49f; --accent-soft: #1d3a31; }
+    .panel-eigene { --accent: #e07ab5; --accent-soft: #42213a; }
   }
   .tabs.drive-active { --accent: #5b5bd6; }
   @media (prefers-color-scheme: dark) { .tabs.drive-active { --accent: #8b8bf0; } }
@@ -345,16 +365,28 @@
       <h1 id="welcomeTitle">Hey du! Worauf hast du heute Lust?</h1>
       <p class="sub">Such dir was aus – ich kümmer mich um den Rest.</p>
     </header>
-    <button class="choice" type="button" id="chooseEssen">
-      <span class="choice-emoji">🍝🥂</span>
-      <span class="choice-title">Essen gehen</span>
-      <span class="choice-sub">Küche, Gegend, Uhrzeit & Stimmung aussuchen</span>
-    </button>
-    <button class="choice choice-drive" type="button" id="chooseDrive">
-      <span class="choice-emoji">🚗🌙</span>
-      <span class="choice-title">Late Night Drive</span>
-      <span class="choice-sub">Abholzeit, Musik & wohin die Fahrt geht</span>
-    </button>
+    <div class="choice-grid">
+      <button class="choice" type="button" data-page="essen">
+        <span class="choice-emoji">🍝🥂</span>
+        <span class="choice-title">Essen gehen</span>
+        <span class="choice-sub">Küche, Gegend & Stimmung</span>
+      </button>
+      <button class="choice choice-drive" type="button" data-page="drive">
+        <span class="choice-emoji">🚗🌙</span>
+        <span class="choice-title">Late Night Drive</span>
+        <span class="choice-sub">Abholen, Musik & los</span>
+      </button>
+      <button class="choice choice-vorbei" type="button" data-page="vorbei">
+        <span class="choice-emoji">🏠🍿</span>
+        <span class="choice-title">Komm vorbei</span>
+        <span class="choice-sub">Wann & wohin ich kommen soll</span>
+      </button>
+      <button class="choice choice-eigene" type="button" data-page="eigene">
+        <span class="choice-emoji">✍️💡</span>
+        <span class="choice-title">Eigene Idee</span>
+        <span class="choice-sub">Schreib selbst, was du willst</span>
+      </button>
+    </div>
   </section>
 
   <!-- ===== FORMULAR (Essen oder Late Night Drive) ===== -->
@@ -465,8 +497,8 @@
         <p class="hint">Adresse oder einfach beschreiben</p>
         <input class="text-input" id="abholOrt" type="text" maxlength="200" autocomplete="street-address" placeholder="z. B. Musterstraße 1, Saarlouis">
         <div class="chips" style="margin-top:10px">
-          <button class="quick" type="button" data-fill="Bei mir zuhause 🏠">🏠 Bei mir zuhause</button>
-          <button class="quick" type="button" data-fill="Nach dem Essen am Restaurant 🍽️">🍽️ Nach dem Essen</button>
+          <button class="quick" type="button" data-target="abholOrt" data-fill="Bei mir zuhause 🏠">🏠 Bei mir zuhause</button>
+          <button class="quick" type="button" data-target="abholOrt" data-fill="Nach dem Essen am Restaurant 🍽️">🍽️ Nach dem Essen</button>
         </div>
       </div>
 
@@ -500,6 +532,65 @@
       </div>
      </div>
 
+     <div id="panel-vorbei" class="panel panel-vorbei hidden">
+      <div class="card">
+        <p class="q">Wann soll ich vorbeikommen? 🕖</p>
+        <div class="chips" data-name="vorbeiZeit" data-type="radio">
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="Jetzt sofort ⚡"><span>Jetzt sofort ⚡</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="19:00"><span>19:00</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="19:30"><span>19:30</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="20:00"><span>20:00</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="20:30"><span>20:30</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="21:00"><span>21:00</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="21:30"><span>21:30</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="22:00"><span>22:00</span></label>
+          <label class="chip"><input type="radio" name="vorbeiZeit" value="Später 🌙"><span>Später 🌙</span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="q">Wohin soll ich kommen? 📍</p>
+        <p class="hint">Adresse oder einfach beschreiben</p>
+        <input class="text-input" id="vorbeiOrt" data-field="vorbeiOrt" type="text" maxlength="200" autocomplete="street-address" placeholder="z. B. Musterstraße 1, Saarlouis">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+          <button class="quick" type="button" data-target="vorbeiOrt" data-fill="Zu mir nach Hause 🏠">🏠 Zu mir nach Hause</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="q">Was machen wir?</p>
+        <p class="hint">Optional – mehrere möglich</p>
+        <div class="chips" data-name="vorbeiPlan" data-type="checkbox">
+          <label class="chip"><input type="checkbox" value="🎬 Film/Serie"><span>🎬 Film/Serie</span></label>
+          <label class="chip"><input type="checkbox" value="💬 Quatschen"><span>💬 Quatschen</span></label>
+          <label class="chip"><input type="checkbox" value="🍳 Zusammen kochen"><span>🍳 Zusammen kochen</span></label>
+          <label class="chip"><input type="checkbox" value="🎲 Spiele"><span>🎲 Spiele</span></label>
+          <label class="chip"><input type="checkbox" value="🍕 Essen bestellen"><span>🍕 Essen bestellen</span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="q">Soll ich was mitbringen?</p>
+        <input class="text-input" data-field="vorbeiMitbringen" type="text" maxlength="200" placeholder="z. B. Snacks, Wein, Eis … (optional)">
+      </div>
+     </div>
+
+     <div id="panel-eigene" class="panel panel-eigene hidden">
+      <div class="card">
+        <p class="q">Was hast du vor? 💡</p>
+        <p class="hint">Schreib einfach, worauf du Lust hast</p>
+        <textarea data-field="eigeneIdee" maxlength="800" placeholder="z. B. Kino, Bowling, Sterne gucken, Karaoke …"></textarea>
+      </div>
+      <div class="card">
+        <p class="q">Wann?</p>
+        <input class="text-input" data-field="eigeneZeit" type="text" maxlength="100" placeholder="z. B. 20 Uhr (optional)">
+      </div>
+      <div class="card">
+        <p class="q">Wo?</p>
+        <input class="text-input" data-field="eigenerOrt" type="text" maxlength="200" placeholder="z. B. Cinestar Saarbrücken (optional)">
+      </div>
+     </div>
+
       <button class="btn" type="submit">Fertig – abschicken 💌</button>
       <p class="error" id="error"></p>
     </form>
@@ -516,7 +607,7 @@
       <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">Per WhatsApp schicken</a>
       <button class="btn secondary" id="shareBtn" type="button">Anders teilen / Link kopieren</button>
     </div>
-    <button class="btn secondary" id="otherBtn" type="button" style="margin:0 0 16px">+ Auch noch Late Night Drive planen</button>
+    <div class="more-btns" id="moreBtns"></div>
     <div class="card" id="previewCard"></div>
     <button class="btn secondary" id="editBtn" type="button">✏️ Nochmal ändern</button>
   </section>
@@ -541,7 +632,7 @@
   const CONFIG = {
     deinName: "Tobias",      // z. B. "Tobias" → erscheint im Text ("Schick Tobias deine Auswahl")
     ihrName: "Emelie",       // z. B. "Lena"   → erscheint in der Begrüßung
-    whatsappNummer: "015128851452" // optional: deine Nummer mit Ländervorwahl, ohne + und Leerzeichen, z. B. "4917612345678"
+    whatsappNummer: "" // optional: deine Nummer mit Ländervorwahl, ohne + und Leerzeichen, z. B. "4917612345678"
   };
   // =======================================
 
@@ -708,6 +799,14 @@
     {
       title: "🚗 Late Night Drive",
       fields: { abholZeit: "Abholzeit", abholOrt: "Abholort", musik: "Musik", driveVibe: "Vibe", driveZiel: "Wohin" }
+    },
+    {
+      title: "🏠 Komm vorbei",
+      fields: { vorbeiZeit: "Uhrzeit", vorbeiOrt: "Wohin", vorbeiPlan: "Was machen wir", vorbeiMitbringen: "Mitbringen" }
+    },
+    {
+      title: "✍️ Eigene Idee",
+      fields: { eigeneIdee: "Idee", eigeneZeit: "Wann", eigenerOrt: "Wo" }
     }
   ];
 
@@ -759,10 +858,16 @@
     if ($("linkList").children.length < 8) addLinkRow().focus();
   });
 
-  // --- Seiten: Begrüßung → Essen / Late Night Drive ---
+  // --- Seiten: Begrüßung → Essen / Drive / Komm vorbei / Eigene Idee ---
   const PAGES = {
-    essen: { emoji: "🍝🥂", title: "Essen gehen", sub: "Such dir aus, worauf du Lust hast – ich reservier was Passendes." },
-    drive: { emoji: "🚗🌙", title: "Late Night Drive", sub: "Sag mir, wann und wo ich dich abhole – und was wir hören." }
+    essen:  { section: 0, emoji: "🍝🥂", title: "Essen gehen", sub: "Such dir aus, worauf du Lust hast – ich reservier was Passendes.", more: "+ Auch noch Essen gehen 🍝",
+              required: (d) => hasAny(d, SECTIONS[0]) || "Wähl wenigstens eine Sache aus 🙂" },
+    drive:  { section: 1, emoji: "🚗🌙", title: "Late Night Drive", sub: "Sag mir, wann und wo ich dich abhole – und was wir hören.", more: "+ Auch noch Late Night Drive 🚗",
+              required: (d) => !!d.abholZeit || "Sag mir noch, wann ich dich abholen soll 🕘" },
+    vorbei: { section: 2, emoji: "🏠🍿", title: "Komm vorbei", sub: "Sag mir, wann und wohin ich kommen soll.", more: "+ Auch noch Komm vorbei 🏠",
+              required: (d) => !d.vorbeiZeit ? "Sag mir noch, wann ich kommen soll 🕖" : !d.vorbeiOrt ? "Wohin soll ich kommen? 📍" : true },
+    eigene: { section: 3, emoji: "✍️💡", title: "Eigene Idee", sub: "Du hast was anderes im Kopf? Schreib's einfach rein.", more: "+ Auch noch eine eigene Idee ✍️",
+              required: (d) => !!d.eigeneIdee || "Schreib kurz, was du vorhast 💡" }
   };
   let page = "essen";
   function openPage(name) {
@@ -771,19 +876,20 @@
     $("pageEmoji").textContent = p.emoji;
     $("title").textContent = p.title;
     $("subtitle").textContent = p.sub;
-    $("panel-essen").classList.toggle("hidden", name !== "essen");
-    $("panel-drive").classList.toggle("hidden", name !== "drive");
-    document.body.classList.toggle("drive-mode", name === "drive");
+    Object.keys(PAGES).forEach((k) => $("panel-" + k).classList.toggle("hidden", k !== name));
+    document.body.className = "mode-" + name;
     $("error").textContent = "";
     show("formView");
   }
-  $("chooseEssen").addEventListener("click", () => openPage("essen"));
-  $("chooseDrive").addEventListener("click", () => openPage("drive"));
+  document.querySelectorAll(".choice[data-page]").forEach((b) =>
+    b.addEventListener("click", () => openPage(b.dataset.page))
+  );
   $("backBtn").addEventListener("click", () => show("welcomeView"));
   $("form").addEventListener("change", () => { $("error").textContent = ""; });
+  $("form").addEventListener("input", () => { $("error").textContent = ""; });
 
   document.querySelectorAll(".quick").forEach((b) =>
-    b.addEventListener("click", () => { $("abholOrt").value = b.dataset.fill; })
+    b.addEventListener("click", () => { $(b.dataset.target).value = b.dataset.fill; })
   );
 
   function hasAny(data, section) {
@@ -816,6 +922,7 @@
     });
     data.nachricht = $("nachricht").value.trim();
     data.abholOrt = $("abholOrt").value.trim();
+    document.querySelectorAll("[data-field]").forEach((el) => { data[el.dataset.field] = el.value.trim(); });
     data.musik = [...$("linkList").querySelectorAll("input")]
       .map((i) => safeUrl(i.value))
       .filter(Boolean);
@@ -874,7 +981,7 @@
     SECTIONS.forEach((section, idx) => {
       if (!hasAny(data, section)) return;
       const wrap = document.createElement("div");
-      wrap.className = "result-section" + (idx === 1 ? " panel-drive" : "");
+      wrap.className = "result-section" + ["", " panel-drive", " panel-vorbei", " panel-eigene"][idx];
       const h = document.createElement("p");
       h.className = "section-title";
       h.textContent = section.title;
@@ -916,8 +1023,8 @@
             value.appendChild(tag);
           });
         } else {
-          value.textContent = key === "nachricht" ? `„${v}“` : v;
-          if (key === "abholOrt" && el.id === "resultCard" && !/zuhause|Restaurant/.test(v)) {
+          value.textContent = key === "nachricht" || key === "eigeneIdee" ? `„${v}“` : v;
+          if (["abholOrt", "vorbeiOrt", "eigenerOrt"].includes(key) && el.id === "resultCard" && !/zuhause|Hause|Restaurant/i.test(v)) {
             const a = document.createElement("a");
             a.className = "map-mini";
             a.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(v);
@@ -957,13 +1064,9 @@
       return;
     }
     const data = collect();
-    const section = page === "drive" ? SECTIONS[1] : SECTIONS[0];
-    if (!hasAny(data, section)) {
-      $("error").textContent = "Wähl wenigstens eine Sache aus 🙂";
-      return;
-    }
-    if (page === "drive" && !data.abholZeit) {
-      $("error").textContent = "Sag mir noch, wann ich dich abholen soll 🕘";
+    const ok = PAGES[page].required(data);
+    if (ok !== true) {
+      $("error").textContent = ok;
       return;
     }
     $("error").textContent = "";
@@ -973,11 +1076,16 @@
     const waBase = CONFIG.whatsappNummer ? `https://wa.me/${CONFIG.whatsappNummer}` : "https://wa.me/";
     $("waBtn").href = `${waBase}?text=${encodeURIComponent(text)}`;
     renderCard($("previewCard"), data);
-    const other = page === "drive" ? "essen" : "drive";
-    const otherDone = hasAny(data, other === "drive" ? SECTIONS[1] : SECTIONS[0]);
-    $("otherBtn").textContent = other === "drive" ? "+ Auch noch Late Night Drive planen 🚗" : "+ Auch noch Essen gehen planen 🍝";
-    $("otherBtn").classList.toggle("hidden", otherDone);
-    $("otherBtn").onclick = () => openPage(other);
+    $("moreBtns").innerHTML = "";
+    Object.entries(PAGES).forEach(([k, p]) => {
+      if (hasAny(data, SECTIONS[p.section])) return;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn secondary";
+      b.textContent = p.more;
+      b.addEventListener("click", () => openPage(k));
+      $("moreBtns").appendChild(b);
+    });
     show("sentView");
   });
 
@@ -1001,7 +1109,7 @@
     }
   });
 
-  $("editBtn").addEventListener("click", () => show("formView"));
+  $("editBtn").addEventListener("click", () => openPage(page));
 
   // --- Wenn ein Ergebnis-Link geöffnet wird ---
   function checkHash() {
@@ -1014,7 +1122,7 @@
       if (food) renderRecommendations($("resultCard"), data);
       $("resultSub").textContent = food
         ? "Hier ihre Angaben und die passenden Restaurants 😉"
-        : "Hier ihre Angaben – ab ins Auto 🚗";
+        : hasAny(data, SECTIONS[1]) ? "Hier ihre Angaben – ab ins Auto 🚗" : "Hier ihre Angaben 😉";
       show("resultView");
     } catch {
       // kaputter Link → einfach das Formular zeigen
