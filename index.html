@@ -176,6 +176,8 @@
     color: var(--accent);
   }
   .resto-actions a.call { background: var(--accent); color: #fff; }
+  .cal-card { padding: 16px; }
+  .cal-hint { font-size: 13px; color: var(--muted); margin: 10px 2px 0; text-align: center; }
   .relax-note { font-size: 14px; color: var(--muted); margin: 0 0 12px; }
 
   /* --- Begrüßung --- */
@@ -619,6 +621,10 @@
       <h1 id="resultTitle">Ihre Wünsche für heute Abend</h1>
       <p class="sub" id="resultSub"></p>
     </header>
+    <div class="card cal-card">
+      <button class="btn" id="calBtn" type="button">📅 In meinen Kalender eintragen</button>
+      <p class="cal-hint" id="calHint"></p>
+    </div>
     <div class="card" id="resultCard"></div>
   </section>
 
@@ -1070,6 +1076,10 @@
       return;
     }
     $("error").textContent = "";
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    data.datum = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    data.gesendet = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
     current = data;
     const link = resultLink(data);
     const text = summaryText(data) + "\n\nAlles auf einen Blick: " + link;
@@ -1111,6 +1121,108 @@
 
   $("editBtn").addEventListener("click", () => openPage(page));
 
+
+  // --- Kalender (.ics) für dein iPhone ---
+  function parseTime(raw, data) {
+    if (!raw) return null;
+    if (/sofort/i.test(raw)) return data.gesendet || null;
+    if (/Mitternacht/i.test(raw)) return "00:30";
+    if (/Später/i.test(raw)) return "22:30";
+    const m = raw.match(/(\d{1,2})(?:[:.](\d{2}))?/);
+    if (!m) return null;
+    const h = +m[1], min = m[2] ? +m[2] : 0;
+    if (h > 23 || min > 59) return null;
+    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  }
+  function icsEscape(t) {
+    return String(t).replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  }
+  function icsDate(dateStr, time, addMinutes = 0) {
+    const [y, mo, d] = dateStr.split("-").map(Number);
+    const [h, mi] = time.split(":").map(Number);
+    const dt = new Date(y, mo - 1, d, h, mi);
+    if (h < 6) dt.setDate(dt.getDate() + 1); // z. B. 00:30 → nächster Tag
+    dt.setMinutes(dt.getMinutes() + addMinutes);
+    const p = (n) => String(n).padStart(2, "0");
+    return `${dt.getFullYear()}${p(dt.getMonth() + 1)}${p(dt.getDate())}T${p(dt.getHours())}${p(dt.getMinutes())}00`;
+  }
+  function sectionDetails(data, section) {
+    const lines = [];
+    for (const [key, label] of Object.entries(section.fields)) {
+      const v = data[key];
+      const val = Array.isArray(v) ? v.join(", ") : v;
+      if (val) lines.push(`${label}: ${val}`);
+    }
+    return lines.join("\n");
+  }
+  function buildEvents(data) {
+    const datum = data.datum || new Date().toISOString().slice(0, 10);
+    const wer = CONFIG.ihrName || "ihr";      // „mit ihr“, „zu ihr“
+    const werAkk = CONFIG.ihrName || "sie";   // „sie abholen“
+    const events = [];
+    const add = (title, timeRaw, location, details, minutes) => {
+      events.push({ title, time: parseTime(timeRaw, data), location, details, minutes });
+    };
+    if (hasAny(data, SECTIONS[0])) {
+      const { list } = recommend(data);
+      const loc = list[0] ? `${list[0].name}, ${list[0].ort}` : "";
+      const vorschlaege = list.length ? "\n\nVorschläge: " + list.map((r) => `${r.name} (${r.ort})`).join(", ") : "";
+      add(`🍽️ Essen mit ${wer}`, data.zeit, loc, sectionDetails(data, SECTIONS[0]) + vorschlaege, 120);
+    }
+    if (hasAny(data, SECTIONS[1])) {
+      add(`🚗 Late Night Drive – ${werAkk} abholen`, data.abholZeit, data.abholOrt, sectionDetails(data, SECTIONS[1]), 90);
+    }
+    if (hasAny(data, SECTIONS[2])) {
+      add(`🏠 Zu ${wer} vorbeikommen`, data.vorbeiZeit, data.vorbeiOrt, sectionDetails(data, SECTIONS[2]), 180);
+    }
+    if (hasAny(data, SECTIONS[3])) {
+      const idee = (data.eigeneIdee || "Eigene Idee").slice(0, 50);
+      add(`✍️ ${idee}`, data.eigeneZeit, data.eigenerOrt, sectionDetails(data, SECTIONS[3]), 120);
+    }
+    return { datum, events };
+  }
+  function buildIcs(data) {
+    const { datum, events } = buildEvents(data);
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+    const out = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Heute Abend//DE", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+    events.forEach((ev, i) => {
+      out.push("BEGIN:VEVENT", `UID:${datum}-${i}-${Math.random().toString(36).slice(2)}@heute-abend`, `DTSTAMP:${stamp}`);
+      if (ev.time) {
+        out.push(`DTSTART:${icsDate(datum, ev.time)}`, `DTEND:${icsDate(datum, ev.time, ev.minutes)}`);
+      } else {
+        const d = datum.replace(/-/g, "");
+        const next = new Date(datum + "T12:00:00"); next.setDate(next.getDate() + 1);
+        const n = next.toISOString().slice(0, 10).replace(/-/g, "");
+        out.push(`DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${n}`);
+      }
+      out.push(`SUMMARY:${icsEscape(ev.title)}`);
+      if (ev.location) out.push(`LOCATION:${icsEscape(ev.location)}`);
+      if (ev.details) out.push(`DESCRIPTION:${icsEscape(ev.details)}`);
+      if (ev.time) out.push("BEGIN:VALARM", "TRIGGER:-PT30M", "ACTION:DISPLAY", `DESCRIPTION:${icsEscape(ev.title)}`, "END:VALARM");
+      out.push("END:VEVENT");
+    });
+    out.push("END:VCALENDAR");
+    return { ics: out.join("\r\n"), count: events.length };
+  }
+  function setupCalendar(data) {
+    const { events } = buildEvents(data);
+    $("calHint").textContent = events.length === 1
+      ? "1 Termin mit Erinnerung 30 Min. vorher"
+      : `${events.length} Termine mit Erinnerung 30 Min. vorher`;
+    $("calBtn").onclick = () => {
+      const { ics } = buildIcs(data);
+      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "heute-abend.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    };
+  }
+
   // --- Wenn ein Ergebnis-Link geöffnet wird ---
   function checkHash() {
     const m = location.hash.match(/^#a=(.+)$/);
@@ -1120,6 +1232,7 @@
       renderCard($("resultCard"), data);
       const food = hasAny(data, SECTIONS[0]);
       if (food) renderRecommendations($("resultCard"), data);
+      setupCalendar(data);
       $("resultSub").textContent = food
         ? "Hier ihre Angaben und die passenden Restaurants 😉"
         : hasAny(data, SECTIONS[1]) ? "Hier ihre Angaben – ab ins Auto 🚗" : "Hier ihre Angaben 😉";
