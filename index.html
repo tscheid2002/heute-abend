@@ -192,9 +192,33 @@
     position: relative;
   }
   .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .day-pick input[type="date"] {
-    position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0;
+  .cal {
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 12px;
+    margin: -2px 0 14px;
+    max-width: 340px;
   }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .cal-title { font-weight: 600; }
+  .cal-nav {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid var(--line); background: transparent; color: var(--ink);
+    font-size: 20px; line-height: 1; cursor: pointer;
+  }
+  .cal-nav:disabled { opacity: .3; cursor: default; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal-wd { font-size: 12px; color: var(--muted); padding: 4px 0; }
+  .cal-day {
+    aspect-ratio: 1; min-height: 36px;
+    border: 0; border-radius: 50%;
+    background: transparent; color: var(--ink);
+    font: 500 15px Inter, sans-serif; cursor: pointer;
+  }
+  .cal-day:hover:not(:disabled) { background: var(--accent-soft); }
+  .cal-day.today { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .cal-day.sel { background: var(--accent); color: #fff; }
+  .cal-day:disabled { color: var(--muted); opacity: .35; cursor: default; }
   .when-time { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .when-time label { font-size: 14px; color: var(--muted); }
   .time-input {
@@ -1059,22 +1083,68 @@
       days.appendChild(b);
       return b;
     };
-    const bToday = mk("Heute", () => { st.date = isoDate(new Date()); st.custom = false; render(); });
-    const bTomorrow = mk("Morgen", () => { st.date = addDays(isoDate(new Date()), 1); st.custom = false; render(); });
-    const bPick = document.createElement("label");
-    bPick.className = "day day-pick";
-    bPick.setAttribute("role", "button");
-    const pickText = document.createElement("span");
-    pickText.textContent = "📅 Anderes Datum";
-    const dateIn = document.createElement("input");
-    dateIn.type = "date";
-    dateIn.min = isoDate(new Date());
-    dateIn.setAttribute("aria-label", "Datum wählen");
-    dateIn.addEventListener("change", () => {
-      if (dateIn.value) { st.date = dateIn.value; st.custom = true; render(); }
+    const bToday = mk("Heute", () => { st.date = isoDate(new Date()); st.custom = false; cal.classList.add("hidden"); render(); });
+    const bTomorrow = mk("Morgen", () => { st.date = addDays(isoDate(new Date()), 1); st.custom = false; cal.classList.add("hidden"); render(); });
+    // Eigener Kalender statt nativem Datumsfeld (funktioniert zuverlässig auf dem iPhone)
+    const cal = document.createElement("div");
+    cal.className = "cal hidden";
+    let calMonth = null; // "YYYY-MM"
+    const bPick = mk("📅 Anderes Datum", () => {
+      if (cal.classList.contains("hidden")) {
+        calMonth = st.date.slice(0, 7);
+        drawCal();
+        cal.classList.remove("hidden");
+      } else {
+        cal.classList.add("hidden");
+      }
     });
-    bPick.append(pickText, dateIn);
-    days.appendChild(bPick);
+    function drawCal() {
+      cal.innerHTML = "";
+      const [y, m] = calMonth.split("-").map(Number);
+      const today = isoDate(new Date());
+      const head = document.createElement("div");
+      head.className = "cal-head";
+      const prev = document.createElement("button");
+      prev.type = "button"; prev.className = "cal-nav"; prev.textContent = "‹";
+      prev.setAttribute("aria-label", "Vorheriger Monat");
+      const next = document.createElement("button");
+      next.type = "button"; next.className = "cal-nav"; next.textContent = "›";
+      next.setAttribute("aria-label", "Nächster Monat");
+      const title = document.createElement("span");
+      title.className = "cal-title";
+      title.textContent = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"][m - 1] + " " + y;
+      const shift = (n) => { const d = new Date(y, m - 1 + n, 1); calMonth = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}`; drawCal(); };
+      prev.disabled = calMonth <= today.slice(0, 7);
+      prev.addEventListener("click", () => shift(-1));
+      next.addEventListener("click", () => shift(1));
+      head.append(prev, title, next);
+      const grid = document.createElement("div");
+      grid.className = "cal-grid";
+      ["Mo","Di","Mi","Do","Fr","Sa","So"].forEach((w) => {
+        const c = document.createElement("span"); c.className = "cal-wd"; c.textContent = w; grid.appendChild(c);
+      });
+      const first = new Date(y, m - 1, 1);
+      const offset = (first.getDay() + 6) % 7;
+      for (let i = 0; i < offset; i++) grid.appendChild(document.createElement("span"));
+      const daysInMonth = new Date(y, m, 0).getDate();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = `${y}-${pad2(m)}-${pad2(d)}`;
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "cal-day" + (iso === today ? " today" : "") + (iso === st.date ? " sel" : "");
+        b.textContent = d;
+        b.disabled = iso < today;
+        b.setAttribute("aria-label", fmtDate(iso));
+        b.addEventListener("click", () => {
+          st.date = iso;
+          st.custom = iso !== today && iso !== addDays(today, 1);
+          cal.classList.add("hidden");
+          render();
+        });
+        grid.appendChild(b);
+      }
+      cal.append(head, grid);
+    }
     let bNow = null;
     if (el.dataset.now) {
       bNow = mk("⚡ Jetzt", () => {
@@ -1108,7 +1178,7 @@
 
     const sum = document.createElement("div");
     sum.className = "when-summary";
-    el.append(days, row, sum);
+    el.append(days, cal, row, sum);
 
     function render() {
       const today = isoDate(new Date());
@@ -1117,7 +1187,7 @@
       bToday.setAttribute("aria-pressed", String(isToday));
       bTomorrow.setAttribute("aria-pressed", String(isTomorrow));
       bPick.setAttribute("aria-pressed", String(!isToday && !isTomorrow));
-      pickText.textContent = (!isToday && !isTomorrow) ? "📅 " + fmtDate(st.date) : "📅 Anderes Datum";
+      bPick.textContent = (!isToday && !isTomorrow) ? "📅 " + fmtDate(st.date) : "📅 Anderes Datum";
       if (bNow) bNow.setAttribute("aria-pressed", "false");
       const v = whenValue(key);
       sum.textContent = v ? "→ " + fmtWhen(v) : "";
