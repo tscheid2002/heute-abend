@@ -177,6 +177,65 @@
   }
   .resto-actions a.call { background: var(--accent); color: #fff; }
   .cal-card { padding: 16px; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.3); }
+
+  /* --- Datum & Uhrzeit --- */
+  .when-days { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .day {
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font: 500 15px Inter, sans-serif;
+    padding: 9px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    position: relative;
+  }
+  .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .day-pick input[type="date"] {
+    position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0;
+  }
+  .when-time { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .when-time label { font-size: 14px; color: var(--muted); }
+  .time-input {
+    font: 600 20px Inter, sans-serif;
+    color: var(--ink);
+    background: transparent;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 8px 12px;
+    min-width: 120px;
+    min-height: 46px;
+  }
+  .time-input:focus { outline: none; border-color: var(--accent); }
+  .when-clear {
+    border: 0; background: none; color: var(--muted); font: 500 14px Inter, sans-serif;
+    text-decoration: underline; cursor: pointer; padding: 4px;
+  }
+  .when-summary { margin-top: 10px; font-size: 14px; color: var(--accent); font-weight: 600; }
+
+  /* --- Restaurant wählen (deine Ansicht) --- */
+  .resto.pickable { cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+  .resto.pickable:hover { border-color: var(--accent); }
+  .resto.top { border-color: var(--line); background: transparent; }
+  .resto.chosen { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .resto-pick {
+    flex: none;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #fff;
+    margin-right: 10px;
+  }
+  .resto.chosen .resto-pick { background: var(--accent); border-color: var(--accent); }
+  .resto-head-left { display: flex; align-items: center; min-width: 0; }
+  .pick-step {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+  }
+  .own-resto { display: flex; gap: 8px; margin-top: 4px; }
+  .own-resto input { flex: 1; min-width: 0; }
   .cal-hint { font-size: 13px; color: var(--muted); margin: 10px 2px 0; text-align: center; }
   .relax-note { font-size: 14px; color: var(--muted); margin: 0 0 12px; }
 
@@ -433,15 +492,8 @@
       </div>
 
       <div class="card">
-        <p class="q">Wann passt es dir?</p>
-        <div class="chips" data-name="zeit" data-type="radio">
-          <label class="chip"><input type="radio" name="zeit" value="18:00"><span>18:00</span></label>
-          <label class="chip"><input type="radio" name="zeit" value="18:30"><span>18:30</span></label>
-          <label class="chip"><input type="radio" name="zeit" value="19:00"><span>19:00</span></label>
-          <label class="chip"><input type="radio" name="zeit" value="19:30"><span>19:30</span></label>
-          <label class="chip"><input type="radio" name="zeit" value="20:00"><span>20:00</span></label>
-          <label class="chip"><input type="radio" name="zeit" value="20:30"><span>20:30</span></label>
-        </div>
+        <p class="q">Wann passt es dir? 🗓️</p>
+        <div class="when" data-when="zeit" data-default="19:30"></div>
       </div>
 
       <div class="card">
@@ -483,15 +535,8 @@
      <div id="panel-drive" class="panel panel-drive hidden">
       <div class="card">
         <p class="q">Wann soll ich dich abholen? 🕘</p>
-        <div class="chips" data-name="abholZeit" data-type="radio">
-          <label class="chip"><input type="radio" name="abholZeit" value="21:00"><span>21:00</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="21:30"><span>21:30</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="22:00"><span>22:00</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="22:30"><span>22:30</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="23:00"><span>23:00</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="23:30"><span>23:30</span></label>
-          <label class="chip"><input type="radio" name="abholZeit" value="Nach Mitternacht 🌙"><span>Nach Mitternacht 🌙</span></label>
-        </div>
+        <p class="hint">Zeiten nach Mitternacht zählen automatisch zur Nacht danach</p>
+        <div class="when" data-when="abholZeit" data-default="22:00"></div>
       </div>
 
       <div class="card">
@@ -537,17 +582,7 @@
      <div id="panel-vorbei" class="panel panel-vorbei hidden">
       <div class="card">
         <p class="q">Wann soll ich vorbeikommen? 🕖</p>
-        <div class="chips" data-name="vorbeiZeit" data-type="radio">
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="Jetzt sofort ⚡"><span>Jetzt sofort ⚡</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="19:00"><span>19:00</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="19:30"><span>19:30</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="20:00"><span>20:00</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="20:30"><span>20:30</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="21:00"><span>21:00</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="21:30"><span>21:30</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="22:00"><span>22:00</span></label>
-          <label class="chip"><input type="radio" name="vorbeiZeit" value="Später 🌙"><span>Später 🌙</span></label>
-        </div>
+        <div class="when" data-when="vorbeiZeit" data-default="20:00" data-now="1"></div>
       </div>
 
       <div class="card">
@@ -585,7 +620,8 @@
       </div>
       <div class="card">
         <p class="q">Wann?</p>
-        <input class="text-input" data-field="eigeneZeit" type="text" maxlength="100" placeholder="z. B. 20 Uhr (optional)">
+        <p class="hint">Uhrzeit optional – ohne Uhrzeit wird's ein ganztägiger Termin</p>
+        <div class="when" data-when="eigeneZeit" data-default="" data-optional-time="1"></div>
       </div>
       <div class="card">
         <p class="q">Wo?</p>
@@ -618,9 +654,10 @@
   <section id="resultView" class="hidden">
     <header>
       <div class="emoji-big">🎉</div>
-      <h1 id="resultTitle">Ihre Wünsche für heute Abend</h1>
+      <h1 id="resultTitle">Ihre Wünsche ✨</h1>
       <p class="sub" id="resultSub"></p>
     </header>
+    <div class="card hidden" id="pickCard"></div>
     <div class="card cal-card">
       <button class="btn" id="calBtn" type="button">📅 In meinen Kalender eintragen</button>
       <p class="cal-hint" id="calHint"></p>
@@ -734,38 +771,61 @@
     return { list: [], note: "", vibe };
   }
 
+  let chosenResto = null;
+  function pickKey() { return "pick:" + location.hash.slice(0, 120); }
+  function savePick() {
+    try { localStorage.setItem(pickKey(), JSON.stringify(chosenResto)); } catch {}
+  }
+  function loadPick() {
+    try { return JSON.parse(localStorage.getItem(pickKey()) || "null"); } catch { return null; }
+  }
+
   function renderRecommendations(el, data) {
     const { list, note, vibe } = recommend(data);
-    const wrap = document.createElement("div");
-    wrap.className = "result-section";
+    el.innerHTML = "";
+    el.classList.remove("hidden");
+    const step = document.createElement("span");
+    step.className = "pick-step";
+    step.textContent = "Schritt 1";
     const h = document.createElement("p");
     h.className = "section-title";
-    h.textContent = "🔍 Passende Restaurants";
-    wrap.appendChild(h);
-    if (note) {
-      const n = document.createElement("p");
-      n.className = "relax-note";
-      n.textContent = note;
-      wrap.appendChild(n);
+    h.textContent = "🍽️ Wähl das Restaurant";
+    const hint = document.createElement("p");
+    hint.className = "relax-note";
+    hint.textContent = note || "Passend zu ihren Angaben – tipp eins an, dann kommt es in den Kalender.";
+    el.append(step, h, hint);
+
+    const cards = [];
+    function updateChosen() {
+      cards.forEach(({ card, r }) => {
+        const on = !!chosenResto && chosenResto.name === r.name && chosenResto.ort === r.ort;
+        card.classList.toggle("chosen", on);
+        card.setAttribute("aria-pressed", String(on));
+        card.querySelector(".resto-pick").textContent = on ? "✓" : "";
+      });
+      if (!chosenResto || chosenResto.custom === undefined) ownIn.classList.remove("chosen-own");
+      refreshCalendar();
     }
-    if (!list.length) {
-      const n = document.createElement("p");
-      n.className = "relax-note";
-      n.textContent = "Leider nichts Passendes in der Liste gefunden.";
-      wrap.appendChild(n);
-    }
+
     list.forEach((r, i) => {
       const card = document.createElement("div");
-      card.className = "resto" + (i === 0 ? " top" : "");
+      card.className = "resto pickable";
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
       const head = document.createElement("div");
       head.className = "resto-head";
+      const left = document.createElement("span");
+      left.className = "resto-head-left";
+      const dot = document.createElement("span");
+      dot.className = "resto-pick";
       const name = document.createElement("span");
       name.className = "resto-name";
       name.textContent = (i === 0 ? "⭐ " : "") + r.name;
+      left.append(dot, name);
       const badge = document.createElement("span");
       badge.className = "resto-badge";
       badge.textContent = `${"€".repeat(r.preis)} · ★ ${r.bewertung.toFixed(1)}`;
-      head.append(name, badge);
+      head.append(left, badge);
       const meta = document.createElement("div");
       meta.className = "resto-meta";
       meta.textContent = `${r.ort} · ${r.lage}`;
@@ -792,15 +852,50 @@
       map.textContent = "📍 Maps";
       actions.appendChild(map);
       card.appendChild(actions);
-      wrap.appendChild(card);
+      const choose = () => {
+        chosenResto = { name: r.name, ort: r.ort, lage: r.lage, tel: r.tel };
+        ownIn.value = "";
+        savePick();
+        updateChosen();
+      };
+      card.addEventListener("click", (e) => { if (!e.target.closest("a")) choose(); });
+      card.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+      el.appendChild(card);
+      cards.push({ card, r });
     });
-    el.prepend(wrap);
+
+    const ownLabel = document.createElement("p");
+    ownLabel.className = "relax-note";
+    ownLabel.style.margin = "14px 0 6px";
+    ownLabel.textContent = list.length ? "Oder ein anderes Restaurant:" : "Leider nichts Passendes in der Liste – trag eins ein:";
+    const ownRow = document.createElement("div");
+    ownRow.className = "own-resto";
+    const ownIn = document.createElement("input");
+    ownIn.className = "text-input";
+    ownIn.type = "text";
+    ownIn.maxLength = 120;
+    ownIn.placeholder = "Name & Ort, z. B. Bella Italia, Saarlouis";
+    ownIn.addEventListener("input", () => {
+      const v = ownIn.value.trim();
+      chosenResto = v ? { name: v, ort: "", custom: true } : null;
+      savePick();
+      updateChosen();
+    });
+    ownRow.appendChild(ownIn);
+    el.append(ownLabel, ownRow);
+
+    const saved = loadPick();
+    if (saved) {
+      chosenResto = saved;
+      if (saved.custom) ownIn.value = saved.name;
+    }
+    updateChosen();
   }
 
   const SECTIONS = [
     {
       title: "🍽️ Essen",
-      fields: { gegend: "Gegend", kueche: "Küche", zeit: "Uhrzeit", vibe: "Stimmung", budget: "Budget", danach: "Danach", nachricht: "Nachricht" }
+      fields: { gegend: "Gegend", kueche: "Küche", zeit: "Wann", vibe: "Stimmung", budget: "Budget", danach: "Danach", nachricht: "Nachricht" }
     },
     {
       title: "🚗 Late Night Drive",
@@ -808,7 +903,7 @@
     },
     {
       title: "🏠 Komm vorbei",
-      fields: { vorbeiZeit: "Uhrzeit", vorbeiOrt: "Wohin", vorbeiPlan: "Was machen wir", vorbeiMitbringen: "Mitbringen" }
+      fields: { vorbeiZeit: "Wann", vorbeiOrt: "Wohin", vorbeiPlan: "Was machen wir", vorbeiMitbringen: "Mitbringen" }
     },
     {
       title: "✍️ Eigene Idee",
@@ -867,15 +962,16 @@
   // --- Seiten: Begrüßung → Essen / Drive / Komm vorbei / Eigene Idee ---
   const PAGES = {
     essen:  { section: 0, emoji: "🍝🥂", title: "Essen gehen", sub: "Such dir aus, worauf du Lust hast – ich reservier was Passendes.", more: "+ Auch noch Essen gehen 🍝",
-              required: (d) => hasAny(d, SECTIONS[0]) || "Wähl wenigstens eine Sache aus 🙂" },
+              required: (d) => !((d.kueche || []).length || (d.gegend || []).length) ? "Wähl wenigstens eine Küche oder Gegend aus 🙂" : !/T/.test(d.zeit) ? "Wähl noch eine Uhrzeit 🕖" : true },
     drive:  { section: 1, emoji: "🚗🌙", title: "Late Night Drive", sub: "Sag mir, wann und wo ich dich abhole – und was wir hören.", more: "+ Auch noch Late Night Drive 🚗",
-              required: (d) => !!d.abholZeit || "Sag mir noch, wann ich dich abholen soll 🕘" },
+              required: (d) => /T/.test(d.abholZeit) || "Sag mir noch, um wie viel Uhr ich dich abholen soll 🕘" },
     vorbei: { section: 2, emoji: "🏠🍿", title: "Komm vorbei", sub: "Sag mir, wann und wohin ich kommen soll.", more: "+ Auch noch Komm vorbei 🏠",
-              required: (d) => !d.vorbeiZeit ? "Sag mir noch, wann ich kommen soll 🕖" : !d.vorbeiOrt ? "Wohin soll ich kommen? 📍" : true },
+              required: (d) => !/T/.test(d.vorbeiZeit) ? "Sag mir noch, um wie viel Uhr ich kommen soll 🕖" : !d.vorbeiOrt ? "Wohin soll ich kommen? 📍" : true },
     eigene: { section: 3, emoji: "✍️💡", title: "Eigene Idee", sub: "Du hast was anderes im Kopf? Schreib's einfach rein.", more: "+ Auch noch eine eigene Idee ✍️",
               required: (d) => !!d.eigeneIdee || "Schreib kurz, was du vorhast 💡" }
   };
   let page = "essen";
+  const donePages = new Set();
   function openPage(name) {
     page = name;
     const p = PAGES[name];
@@ -918,6 +1014,130 @@
     toast._t = setTimeout(() => t.classList.remove("show"), 2200);
   }
 
+
+  // --- Datum & Uhrzeit-Auswahl ---
+  const WHEN_KEYS = ["zeit", "abholZeit", "vorbeiZeit", "eigeneZeit"];
+  const pad2 = (n) => String(n).padStart(2, "0");
+  function isoDate(d) { return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
+  function addDays(iso, n) {
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d + n);
+    return isoDate(dt);
+  }
+  const WD = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  function fmtDate(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    return `${WD[dt.getDay()]}, ${pad2(d)}.${pad2(m)}.`;
+  }
+  // Wert-Format: "2026-10-09T19:30" (mit Uhrzeit) oder "2026-10-09" (nur Datum)
+  function fmtWhen(v) {
+    if (!v) return "";
+    const m = String(v).match(/^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}))?$/);
+    if (!m) return v; // alte Links: Freitext/alte Uhrzeit
+    return m[2] ? `${fmtDate(m[1])} · ${m[2]} Uhr` : `${fmtDate(m[1])} (ganztägig)`;
+  }
+  function relDayLabel(iso) {
+    const today = isoDate(new Date());
+    if (iso === today) return "Heute";
+    if (iso === addDays(today, 1)) return "Morgen";
+    return fmtDate(iso);
+  }
+
+  const whenState = {};
+  function setupWhen(el) {
+    const key = el.dataset.when;
+    const optionalTime = !!el.dataset.optionalTime;
+    const st = whenState[key] = { date: isoDate(new Date()), time: el.dataset.default || "" };
+
+    const days = document.createElement("div");
+    days.className = "when-days";
+    const mk = (label, fn) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "day"; b.textContent = label;
+      b.addEventListener("click", fn);
+      days.appendChild(b);
+      return b;
+    };
+    const bToday = mk("Heute", () => { st.date = isoDate(new Date()); st.custom = false; render(); });
+    const bTomorrow = mk("Morgen", () => { st.date = addDays(isoDate(new Date()), 1); st.custom = false; render(); });
+    const bPick = document.createElement("label");
+    bPick.className = "day day-pick";
+    bPick.setAttribute("role", "button");
+    const pickText = document.createElement("span");
+    pickText.textContent = "📅 Anderes Datum";
+    const dateIn = document.createElement("input");
+    dateIn.type = "date";
+    dateIn.min = isoDate(new Date());
+    dateIn.setAttribute("aria-label", "Datum wählen");
+    dateIn.addEventListener("change", () => {
+      if (dateIn.value) { st.date = dateIn.value; st.custom = true; render(); }
+    });
+    bPick.append(pickText, dateIn);
+    days.appendChild(bPick);
+    let bNow = null;
+    if (el.dataset.now) {
+      bNow = mk("⚡ Jetzt", () => {
+        const n = new Date();
+        st.date = isoDate(n); st.custom = false;
+        st.time = `${pad2(n.getHours())}:${pad2(n.getMinutes())}`;
+        timeIn.value = st.time; render();
+      });
+    }
+
+    const row = document.createElement("div");
+    row.className = "when-time";
+    const lab = document.createElement("label");
+    lab.textContent = "Uhrzeit";
+    const timeIn = document.createElement("input");
+    timeIn.type = "time";
+    timeIn.className = "time-input";
+    timeIn.step = 300;
+    timeIn.value = st.time;
+    timeIn.setAttribute("aria-label", "Uhrzeit wählen");
+    timeIn.addEventListener("input", () => { st.time = timeIn.value; render(); });
+    timeIn.addEventListener("change", () => { st.time = timeIn.value; render(); });
+    lab.htmlFor = timeIn.id = "time-" + key;
+    row.append(lab, timeIn);
+    if (optionalTime) {
+      const clr = document.createElement("button");
+      clr.type = "button"; clr.className = "when-clear"; clr.textContent = "ohne Uhrzeit";
+      clr.addEventListener("click", () => { st.time = ""; timeIn.value = ""; render(); });
+      row.appendChild(clr);
+    }
+
+    const sum = document.createElement("div");
+    sum.className = "when-summary";
+    el.append(days, row, sum);
+
+    function render() {
+      const today = isoDate(new Date());
+      const isToday = st.date === today && !st.custom;
+      const isTomorrow = st.date === addDays(today, 1) && !st.custom;
+      bToday.setAttribute("aria-pressed", String(isToday));
+      bTomorrow.setAttribute("aria-pressed", String(isTomorrow));
+      bPick.setAttribute("aria-pressed", String(!isToday && !isTomorrow));
+      pickText.textContent = (!isToday && !isTomorrow) ? "📅 " + fmtDate(st.date) : "📅 Anderes Datum";
+      if (bNow) bNow.setAttribute("aria-pressed", "false");
+      const v = whenValue(key);
+      sum.textContent = v ? "→ " + fmtWhen(v) : "";
+    }
+    st.render = render;
+    render();
+  }
+  // Nach Mitternacht (00:00–04:59) bei „Heute“ = die Nacht danach
+  function whenValue(key) {
+    const st = whenState[key];
+    if (!st) return "";
+    let date = st.date;
+    if (st.time && st.time < "05:00" && !st.custom && date === isoDate(new Date())) {
+      const n = new Date();
+      if (n.getHours() >= 5) date = addDays(date, 1);
+    }
+    return st.time ? `${date}T${st.time}` : date;
+  }
+  document.querySelectorAll(".when[data-when]").forEach(setupWhen);
+
   // --- Antworten einsammeln ---
   function collect() {
     const data = {};
@@ -929,6 +1149,10 @@
     data.nachricht = $("nachricht").value.trim();
     data.abholOrt = $("abholOrt").value.trim();
     document.querySelectorAll("[data-field]").forEach((el) => { data[el.dataset.field] = el.value.trim(); });
+    document.querySelectorAll(".when[data-when]").forEach((el) => {
+      const panel = el.closest(".panel").id.replace("panel-", "");
+      data[el.dataset.when] = donePages.has(panel) ? whenValue(el.dataset.when) : "";
+    });
     data.musik = [...$("linkList").querySelectorAll("input")]
       .map((i) => safeUrl(i.value))
       .filter(Boolean);
@@ -963,7 +1187,7 @@
 
   // --- Text-Zusammenfassung (für WhatsApp) ---
   function summaryText(data) {
-    const lines = ["Meine Wünsche für heute Abend ✨"];
+    const lines = ["Meine Wünsche ✨"];
     for (const section of SECTIONS) {
       if (!hasAny(data, section)) continue;
       lines.push("", section.title);
@@ -973,7 +1197,7 @@
           (v || []).forEach((url) => lines.push(`${label}: ${url}`));
           continue;
         }
-        const val = Array.isArray(v) ? v.join(", ") : v;
+        const val = Array.isArray(v) ? v.join(", ") : WHEN_KEYS.includes(key) ? fmtWhen(v) : v;
         if (val) lines.push(`${label}: ${val}`);
       }
     }
@@ -1029,7 +1253,7 @@
             value.appendChild(tag);
           });
         } else {
-          value.textContent = key === "nachricht" || key === "eigeneIdee" ? `„${v}“` : v;
+          value.textContent = key === "nachricht" || key === "eigeneIdee" ? `„${v}“` : WHEN_KEYS.includes(key) ? fmtWhen(v) : v;
           if (["abholOrt", "vorbeiOrt", "eigenerOrt"].includes(key) && el.id === "resultCard" && !/zuhause|Hause|Restaurant/i.test(v)) {
             const a = document.createElement("a");
             a.className = "map-mini";
@@ -1058,7 +1282,7 @@
     $("waBtn").textContent = `Per WhatsApp an ${CONFIG.deinName}`;
   }
   if (CONFIG.ihrName) {
-    $("resultTitle").textContent = `${CONFIG.ihrName}s Wünsche für heute Abend`;
+    $("resultTitle").textContent = `${CONFIG.ihrName}s Wünsche ✨`;
   }
 
   // --- Absenden ---
@@ -1069,9 +1293,12 @@
       $("error").textContent = "Ein Musik-Link sieht nicht ganz richtig aus 🤔";
       return;
     }
+    const wasDone = donePages.has(page);
+    donePages.add(page);
     const data = collect();
     const ok = PAGES[page].required(data);
     if (ok !== true) {
+      if (!wasDone) donePages.delete(page);
       $("error").textContent = ok;
       return;
     }
@@ -1123,51 +1350,52 @@
 
 
   // --- Kalender (.ics) für dein iPhone ---
-  function parseTime(raw, data) {
-    if (!raw) return null;
-    if (/sofort/i.test(raw)) return data.gesendet || null;
-    if (/Mitternacht/i.test(raw)) return "00:30";
-    if (/Später/i.test(raw)) return "22:30";
-    const m = raw.match(/(\d{1,2})(?:[:.](\d{2}))?/);
-    if (!m) return null;
-    const h = +m[1], min = m[2] ? +m[2] : 0;
-    if (h > 23 || min > 59) return null;
-    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  // Alte Links (nur Uhrzeit/Freitext) werden weiter unterstützt
+  function parseWhen(raw, data) {
+    const base = data.datum || isoDate(new Date());
+    if (!raw) return { date: base, time: null };
+    const iso = String(raw).match(/^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}))?$/);
+    if (iso) return { date: iso[1], time: iso[2] || null };
+    if (/sofort/i.test(raw)) return { date: base, time: data.gesendet || null };
+    if (/Mitternacht/i.test(raw)) return { date: addDays(base, 1), time: "00:30" };
+    if (/Später/i.test(raw)) return { date: base, time: "22:30" };
+    const m = String(raw).match(/(\d{1,2})(?:[:.](\d{2}))?/);
+    if (!m || +m[1] > 23 || (m[2] && +m[2] > 59)) return { date: base, time: null };
+    const h = +m[1];
+    return { date: h < 5 ? addDays(base, 1) : base, time: `${pad2(h)}:${pad2(m[2] ? +m[2] : 0)}` };
   }
   function icsEscape(t) {
     return String(t).replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
   }
-  function icsDate(dateStr, time, addMinutes = 0) {
-    const [y, mo, d] = dateStr.split("-").map(Number);
+  function icsStamp(date, time, addMinutes = 0) {
+    const [y, mo, d] = date.split("-").map(Number);
     const [h, mi] = time.split(":").map(Number);
-    const dt = new Date(y, mo - 1, d, h, mi);
-    if (h < 6) dt.setDate(dt.getDate() + 1); // z. B. 00:30 → nächster Tag
-    dt.setMinutes(dt.getMinutes() + addMinutes);
-    const p = (n) => String(n).padStart(2, "0");
-    return `${dt.getFullYear()}${p(dt.getMonth() + 1)}${p(dt.getDate())}T${p(dt.getHours())}${p(dt.getMinutes())}00`;
+    const dt = new Date(y, mo - 1, d, h, mi + addMinutes);
+    return `${dt.getFullYear()}${pad2(dt.getMonth() + 1)}${pad2(dt.getDate())}T${pad2(dt.getHours())}${pad2(dt.getMinutes())}00`;
   }
   function sectionDetails(data, section) {
     const lines = [];
     for (const [key, label] of Object.entries(section.fields)) {
       const v = data[key];
-      const val = Array.isArray(v) ? v.join(", ") : v;
+      const val = Array.isArray(v) ? v.join(", ") : WHEN_KEYS.includes(key) ? fmtWhen(v) : v;
       if (val) lines.push(`${label}: ${val}`);
     }
     return lines.join("\n");
   }
   function buildEvents(data) {
-    const datum = data.datum || new Date().toISOString().slice(0, 10);
     const wer = CONFIG.ihrName || "ihr";      // „mit ihr“, „zu ihr“
     const werAkk = CONFIG.ihrName || "sie";   // „sie abholen“
     const events = [];
-    const add = (title, timeRaw, location, details, minutes) => {
-      events.push({ title, time: parseTime(timeRaw, data), location, details, minutes });
+    const add = (title, whenRaw, location, details, minutes) => {
+      const { date, time } = parseWhen(whenRaw, data);
+      events.push({ title, date, time, location, details, minutes });
     };
     if (hasAny(data, SECTIONS[0])) {
-      const { list } = recommend(data);
-      const loc = list[0] ? `${list[0].name}, ${list[0].ort}` : "";
-      const vorschlaege = list.length ? "\n\nVorschläge: " + list.map((r) => `${r.name} (${r.ort})`).join(", ") : "";
-      add(`🍽️ Essen mit ${wer}`, data.zeit, loc, sectionDetails(data, SECTIONS[0]) + vorschlaege, 120);
+      const r = chosenResto;
+      const title = r ? `🍽️ Essen mit ${wer} – ${r.name}` : `🍽️ Essen mit ${wer}`;
+      const loc = r ? (r.ort ? `${r.name}, ${r.ort}` : r.name) : "";
+      const extra = r && r.tel ? `\n\nRestaurant-Telefon: ${r.tel}` : "";
+      add(title, data.zeit, loc, sectionDetails(data, SECTIONS[0]) + extra, 120);
     }
     if (hasAny(data, SECTIONS[1])) {
       add(`🚗 Late Night Drive – ${werAkk} abholen`, data.abholZeit, data.abholOrt, sectionDetails(data, SECTIONS[1]), 90);
@@ -1179,21 +1407,18 @@
       const idee = (data.eigeneIdee || "Eigene Idee").slice(0, 50);
       add(`✍️ ${idee}`, data.eigeneZeit, data.eigenerOrt, sectionDetails(data, SECTIONS[3]), 120);
     }
-    return { datum, events };
+    return events;
   }
   function buildIcs(data) {
-    const { datum, events } = buildEvents(data);
+    const events = buildEvents(data);
     const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
     const out = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Heute Abend//DE", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
     events.forEach((ev, i) => {
-      out.push("BEGIN:VEVENT", `UID:${datum}-${i}-${Math.random().toString(36).slice(2)}@heute-abend`, `DTSTAMP:${stamp}`);
+      out.push("BEGIN:VEVENT", `UID:${ev.date}-${i}-${Math.random().toString(36).slice(2)}@heute-abend`, `DTSTAMP:${stamp}`);
       if (ev.time) {
-        out.push(`DTSTART:${icsDate(datum, ev.time)}`, `DTEND:${icsDate(datum, ev.time, ev.minutes)}`);
+        out.push(`DTSTART:${icsStamp(ev.date, ev.time)}`, `DTEND:${icsStamp(ev.date, ev.time, ev.minutes)}`);
       } else {
-        const d = datum.replace(/-/g, "");
-        const next = new Date(datum + "T12:00:00"); next.setDate(next.getDate() + 1);
-        const n = next.toISOString().slice(0, 10).replace(/-/g, "");
-        out.push(`DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${n}`);
+        out.push(`DTSTART;VALUE=DATE:${ev.date.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${addDays(ev.date, 1).replace(/-/g, "")}`);
       }
       out.push(`SUMMARY:${icsEscape(ev.title)}`);
       if (ev.location) out.push(`LOCATION:${icsEscape(ev.location)}`);
@@ -1202,16 +1427,26 @@
       out.push("END:VEVENT");
     });
     out.push("END:VCALENDAR");
-    return { ics: out.join("\r\n"), count: events.length };
+    return out.join("\r\n");
+  }
+  let calData = null;
+  function refreshCalendar() {
+    if (!calData) return;
+    const needPick = hasAny(calData, SECTIONS[0]) && !chosenResto;
+    const n = buildEvents(calData).length;
+    $("calBtn").disabled = needPick;
+    $("calBtn").textContent = needPick ? "📅 Erst Restaurant wählen ☝️" : "📅 In meinen Kalender eintragen";
+    $("calHint").textContent = needPick
+      ? "Das gewählte Restaurant kommt automatisch als Ort in den Termin"
+      : (n === 1 ? "1 Termin" : `${n} Termine`) + " mit Erinnerung 30 Min. vorher" +
+        (chosenResto && hasAny(calData, SECTIONS[0]) ? ` · 🍽️ ${chosenResto.name}` : "");
   }
   function setupCalendar(data) {
-    const { events } = buildEvents(data);
-    $("calHint").textContent = events.length === 1
-      ? "1 Termin mit Erinnerung 30 Min. vorher"
-      : `${events.length} Termine mit Erinnerung 30 Min. vorher`;
+    calData = data;
+    refreshCalendar();
     $("calBtn").onclick = () => {
-      const { ics } = buildIcs(data);
-      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      if ($("calBtn").disabled) return;
+      const blob = new Blob([buildIcs(data)], { type: "text/calendar;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -1231,10 +1466,11 @@
       const data = decode(m[1]);
       renderCard($("resultCard"), data);
       const food = hasAny(data, SECTIONS[0]);
-      if (food) renderRecommendations($("resultCard"), data);
       setupCalendar(data);
+      if (food) renderRecommendations($("pickCard"), data);
+      else $("pickCard").classList.add("hidden");
       $("resultSub").textContent = food
-        ? "Hier ihre Angaben und die passenden Restaurants 😉"
+        ? "Wähl zuerst das Restaurant – dann ab in den Kalender 😉"
         : hasAny(data, SECTIONS[1]) ? "Hier ihre Angaben – ab ins Auto 🚗" : "Hier ihre Angaben 😉";
       show("resultView");
     } catch {
