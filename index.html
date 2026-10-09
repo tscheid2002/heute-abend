@@ -708,49 +708,59 @@
   // ============ RESTAURANTS (hier kannst du ergänzen/löschen) ============
   // kueche: italienisch, sushi, burger, asiatisch, mexikanisch, indisch, griechisch, türkisch, tapas, saarländisch, französisch
   // preis: 1–4 (€ bis €€€€) · vibe: gemuetlich, schick, locker
+  // zeiten: Öffnungszeiten Mo..So ("" = Ruhetag, "17:00-22:00", mehrere mit Komma; "25:00" = 01:00 nachts)
+  // Stand: Google, 09.10.2026
   const RESTAURANTS = [
     // --- Saarlouis ---
-    { name: "Donna Mia", ort: "Saarlouis", gegend: "Saarlouis", lage: "Kleiner Markt", kueche: ["italienisch"], preis: 2, vibe: ["locker"], tel: "+4968311252488", bewertung: 4.3 },
-    { name: "Davy's Pinseria", ort: "Saarlouis", gegend: "Saarlouis", lage: "Kasematten", kueche: ["italienisch"], preis: 2, vibe: ["locker"], tel: "+4968319669977", bewertung: 4.8 },
-    { name: "Ristorante Trentino", ort: "Saarlouis", gegend: "Saarlouis", lage: "Sonnenstraße", kueche: ["italienisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968314889713", bewertung: 4.8 },
-    { name: "Edo Sushi", ort: "Saarlouis", gegend: "Saarlouis", lage: "Metzer Straße", kueche: ["sushi", "asiatisch"], preis: 3, vibe: ["schick"], tel: "+4968319522611", bewertung: 4.8 },
-    { name: "HUYDO Sushi & Bar", ort: "Saarlouis", gegend: "Saarlouis", lage: "Sonnenstraße · Do bis 21:30", kueche: ["sushi", "asiatisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968319867677", bewertung: 4.6 },
-    { name: "Kaminkeller", ort: "Saarlouis", gegend: "Saarlouis", lage: "Kasematten · Schwenker", kueche: ["saarländisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968312716", bewertung: 4.6 },
-    { name: "Auberge Maréchal Ney", ort: "Saarlouis", gegend: "Saarlouis", lage: "Bierstraße", kueche: ["französisch", "italienisch"], preis: 3, vibe: ["schick"], tel: "+49683148493", bewertung: 4.7 },
-    { name: "Louis XIV", ort: "Saarlouis", gegend: "Saarlouis", lage: "Sonnenstraße · Bistro", kueche: ["französisch"], preis: 3, vibe: ["schick", "gemuetlich"], tel: "+4915785563585", bewertung: 4.7 },
-    { name: "Hofhaus", ort: "Saarlouis", gegend: "Saarlouis", lage: "Beaumarais · Cocktails", kueche: ["saarländisch"], preis: 3, vibe: ["schick", "locker"], tel: "+4968314889699", bewertung: 4.5 },
-    { name: "Hans im Glück", ort: "Saarlouis", gegend: "Saarlouis", lage: "Altstadt · Bar", kueche: ["burger"], preis: 2, vibe: ["locker"], tel: "+4968319389894", bewertung: 4.4 },
-    { name: "Coyote Cafe", ort: "Saarlouis", gegend: "Saarlouis", lage: "Sonnenstraße · Tex-Mex", kueche: ["burger", "mexikanisch"], preis: 2, vibe: ["locker"], tel: "+496831460180", bewertung: 4.5 },
-    { name: "Quesadilla", ort: "Saarlouis", gegend: "Saarlouis", lage: "Altstadt", kueche: ["mexikanisch"], preis: 2, vibe: ["locker"], tel: "+4968317646555", bewertung: 4.2 },
-    { name: "Taj Mahal", ort: "Saarlouis", gegend: "Saarlouis", lage: "Postgäßchen", kueche: ["indisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968312133", bewertung: 4.7 },
-    { name: "Bombay", ort: "Saarlouis", gegend: "Saarlouis", lage: "Kasematten", kueche: ["indisch"], preis: 2, vibe: ["gemuetlich"], tel: "+496831128712", bewertung: 4.7 },
-    { name: "Delphi", ort: "Saarlouis", gegend: "Saarlouis", lage: "Bastion · oft ausgebucht", kueche: ["griechisch"], preis: 2, vibe: ["schick", "gemuetlich"], tel: "+496831123558", bewertung: 4.5 },
-    { name: "Santorini", ort: "Saarlouis", gegend: "Saarlouis", lage: "Altstadt", kueche: ["griechisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968315056578", bewertung: 4.5 },
-    { name: "Pantheon", ort: "Saarlouis", gegend: "Saarlouis", lage: "Schlächterstraße", kueche: ["griechisch"], preis: 3, vibe: ["gemuetlich"], tel: "+4968314889842", bewertung: 4.6 },
+    {"name": "Donna Mia", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Kleiner Markt", "kueche": ["italienisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968311252488", "bewertung": 4.3, "zeiten": ["11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00"]},
+    {"name": "Davy's Pinseria", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Kasematten", "kueche": ["italienisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968319669977", "bewertung": 4.8, "zeiten": ["", "17:00-22:00", "17:00-22:00", "17:00-22:00", "17:00-23:00", "17:00-23:00", "17:00-22:00"]},
+    {"name": "Ristorante Trentino", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Sonnenstraße", "kueche": ["italienisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968314889713", "bewertung": 4.8, "zeiten": ["11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00"]},
+    {"name": "Edo Sushi", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Metzer Straße", "kueche": ["sushi", "asiatisch"], "preis": 3, "vibe": ["schick"], "tel": "+4968319522611", "bewertung": 4.8, "zeiten": ["", "12:00-15:00,17:30-23:00", "12:00-15:00,17:30-23:00", "12:00-15:00,17:30-23:00", "12:00-15:00,17:30-23:00", "12:00-15:00,17:30-23:00", "12:00-15:00,17:30-23:00"]},
+    {"name": "HUYDO Sushi & Bar", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Sonnenstraße", "kueche": ["sushi", "asiatisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968319867677", "bewertung": 4.6, "zeiten": ["17:00-21:30", "12:00-14:30,17:00-21:30", "12:00-14:30,17:00-21:30", "12:00-14:30,17:00-21:30", "12:00-21:30", "12:00-21:30", ""]},
+    {"name": "Kaminkeller", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Kasematten · Schwenker", "kueche": ["saarländisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968312716", "bewertung": 4.6, "zeiten": ["", "18:00-22:00", "18:00-22:00", "18:00-22:00", "18:00-22:00", "18:00-22:00", "18:00-21:30"]},
+    {"name": "Kartoffelhaus", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Bierstraße · Schnitzel & Pizza", "kueche": ["saarländisch"], "preis": 2, "vibe": ["locker"], "tel": "+49683140598", "bewertung": 4.3, "zeiten": ["11:30-22:00", "11:30-22:00", "", "11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00"]},
+    {"name": "Auberge Maréchal Ney", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Bierstraße", "kueche": ["französisch", "italienisch"], "preis": 3, "vibe": ["schick"], "tel": "+49683148493", "bewertung": 4.7, "zeiten": ["", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30"]},
+    {"name": "Louis XIV", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Sonnenstraße · Bistro", "kueche": ["französisch"], "preis": 3, "vibe": ["schick", "gemuetlich"], "tel": "+4915785563585", "bewertung": 4.7, "zeiten": ["", "11:30-14:30,18:00-22:00", "11:30-14:30,18:00-22:00", "11:30-14:30,18:00-23:00", "11:30-14:30,18:00-24:00", "11:30-14:30,18:00-22:00", ""]},
+    {"name": "Hofhaus", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Beaumarais · Cocktails", "kueche": ["saarländisch"], "preis": 3, "vibe": ["schick", "locker"], "tel": "+4968314889699", "bewertung": 4.5, "zeiten": ["11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-22:00", "11:30-15:00,18:00-23:00", "18:00-23:00", "11:30-15:00,18:00-22:00"]},
+    {"name": "Hans im Glück", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Altstadt · Bar", "kueche": ["burger"], "preis": 2, "vibe": ["locker"], "tel": "+4968319389894", "bewertung": 4.4, "zeiten": ["12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "11:00-23:00", "12:00-23:00", "12:00-22:00"]},
+    {"name": "Coyote Cafe", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Sonnenstraße · Tex-Mex", "kueche": ["burger", "mexikanisch"], "preis": 2, "vibe": ["locker"], "tel": "+496831460180", "bewertung": 4.5, "zeiten": ["11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-24:00", "11:30-24:00", "11:30-22:00"]},
+    {"name": "Quesadilla", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Altstadt", "kueche": ["mexikanisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968317646555", "bewertung": 4.2, "zeiten": ["09:00-24:00", "09:00-24:00", "09:00-24:00", "09:00-24:00", "09:00-24:00", "09:00-24:00", "09:00-24:00"]},
+    {"name": "Taj Mahal", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Postgäßchen", "kueche": ["indisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968312133", "bewertung": 4.7, "zeiten": ["11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30", "11:30-14:00,17:30-22:30"]},
+    {"name": "Bombay", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Kasematten", "kueche": ["indisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+496831128712", "bewertung": 4.7, "zeiten": ["", "11:30-14:30,17:30-23:30", "11:30-14:30,17:30-23:30", "11:30-14:30,17:30-23:30", "11:30-14:30,17:30-23:30", "11:30-14:30,17:30-23:30", "11:30-14:30,17:30-23:30"]},
+    {"name": "Delphi", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Bastion · oft ausgebucht", "kueche": ["griechisch"], "preis": 2, "vibe": ["schick", "gemuetlich"], "tel": "+496831123558", "bewertung": 4.5, "zeiten": ["11:30-14:30,18:00-23:30", "", "11:30-14:30,18:00-23:30", "11:30-14:30,18:00-23:30", "11:30-14:30,18:00-23:30", "11:30-14:30,18:00-23:30", "11:30-14:30,18:00-23:30"]},
+    {"name": "Santorini", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Altstadt", "kueche": ["griechisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968315056578", "bewertung": 4.5, "zeiten": ["", "11:00-14:30,17:00-22:00", "11:00-14:30,17:00-22:00", "11:00-14:30,17:00-22:00", "11:00-14:30,17:00-22:00", "11:00-14:30,17:00-22:00", "11:00-14:30,17:00-22:00"]},
+    {"name": "Pantheon", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Schlächterstraße", "kueche": ["griechisch"], "preis": 3, "vibe": ["gemuetlich"], "tel": "+4968314889842", "bewertung": 4.6, "zeiten": ["11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00"]},
+    {"name": "ZOI Taverne", "ort": "Saarlouis", "gegend": "Saarlouis", "lage": "Kasematten", "kueche": ["griechisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968314874090", "bewertung": 4.2, "zeiten": ["", "11:30-14:30,18:00-23:00", "11:30-14:30,18:00-23:00", "11:30-14:30,18:00-23:00", "11:30-14:30,18:00-23:00", "11:30-14:30,18:00-23:00", ""]},
     // --- Saarbrücken ---
-    { name: "Aioli am Markt", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "St. Johanner Markt", kueche: ["tapas"], preis: 2, vibe: ["locker"], tel: "+4968198846300", bewertung: 4.7 },
-    { name: "Tante Maja", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "St. Johanner Markt · Bar", kueche: ["saarländisch"], preis: 2, vibe: ["locker"], tel: "+4968130589", bewertung: 4.4 },
-    { name: "Die Kartoffel", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "St. Johanner Markt", kueche: ["saarländisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968136217", bewertung: 4.5 },
-    { name: "Pasteria al Dente", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "St. Johanner Markt", kueche: ["italienisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968196856562", bewertung: 4.5 },
-    { name: "Yoake", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Rathausplatz · Fusion", kueche: ["sushi", "asiatisch"], preis: 2, vibe: ["schick"], tel: "+4968168600134", bewertung: 4.5 },
-    { name: "YOKO", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Obertorstraße · Vietnamesisch", kueche: ["asiatisch", "sushi"], preis: 2, vibe: ["locker"], tel: "+4968195805388", bewertung: 4.5 },
-    { name: "Nori Ramen & Noodles", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Mainzer Straße · Ramen", kueche: ["asiatisch"], preis: 2, vibe: ["locker"], tel: "", bewertung: 4.7 },
-    { name: "ZENKO", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Reichsstraße", kueche: ["sushi", "asiatisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968140107003", bewertung: 4.7 },
-    { name: "Le Comptoir", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Försterstraße · Fine Dining", kueche: ["französisch"], preis: 4, vibe: ["schick"], tel: "+4968183907886", bewertung: 4.8 },
-    { name: "Memory Burger", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Ufergasse", kueche: ["burger"], preis: 2, vibe: ["locker"], tel: "+4968192799911", bewertung: 4.8 },
-    { name: "Die Burgerei", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Fröschengasse", kueche: ["burger"], preis: 2, vibe: ["locker"], tel: "+4968150062400", bewertung: 4.5 },
-    { name: "Sneaky", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Kaltenbachstraße · Burger & Tacos", kueche: ["burger", "mexikanisch"], preis: 2, vibe: ["locker"], tel: "", bewertung: 4.6 },
-    { name: "Café Especial", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Kronenstraße · Bar", kueche: ["mexikanisch"], preis: 2, vibe: ["locker"], tel: "+496813906619", bewertung: 4.3 },
-    { name: "El Sombrero", ort: "Saarbrücken", gegend: "Saarbrücken", lage: "Hohenzollernstraße", kueche: ["mexikanisch"], preis: 2, vibe: ["gemuetlich"], tel: "+496815846962", bewertung: 4.3 },
+    {"name": "Aioli am Markt", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "St. Johanner Markt", "kueche": ["tapas"], "preis": 2, "vibe": ["locker"], "tel": "+4968198846300", "bewertung": 4.7, "zeiten": ["12:00-23:00", "12:00-23:00", "12:00-23:00", "12:00-23:00", "12:00-23:30", "12:00-23:30", "12:00-23:00"]},
+    {"name": "Tante Maja", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "St. Johanner Markt · Bar", "kueche": ["saarländisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968130589", "bewertung": 4.4, "zeiten": ["10:00-24:00", "09:30-24:00", "09:30-24:00", "09:30-24:00", "09:30-24:00", "09:30-24:00", "09:30-24:00"]},
+    {"name": "Die Kartoffel", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "St. Johanner Markt", "kueche": ["saarländisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968136217", "bewertung": 4.5, "zeiten": ["12:00-22:00", "", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00"]},
+    {"name": "Pasteria al Dente", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "St. Johanner Markt", "kueche": ["italienisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968196856562", "bewertung": 4.5, "zeiten": ["12:00-23:00", "", "12:00-23:00", "12:00-23:00", "12:00-23:00", "12:00-23:00", "12:00-23:00"]},
+    {"name": "Yoake", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Rathausplatz · Fusion", "kueche": ["sushi", "asiatisch"], "preis": 2, "vibe": ["schick"], "tel": "+4968168600134", "bewertung": 4.5, "zeiten": ["17:00-22:00", "11:00-22:00", "11:00-22:00", "11:00-22:00", "11:00-22:30", "11:00-22:30", "12:00-22:00"]},
+    {"name": "YOKO", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Obertorstraße · Vietnamesisch", "kueche": ["asiatisch", "sushi"], "preis": 2, "vibe": ["locker"], "tel": "+4968195805388", "bewertung": 4.5, "zeiten": ["11:30-23:00", "11:30-23:00", "11:30-23:00", "11:30-23:00", "11:30-23:00", "12:00-23:00", "12:00-23:00"]},
+    {"name": "Nori Ramen & Noodles", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Mainzer Straße · Ramen", "kueche": ["asiatisch"], "preis": 2, "vibe": ["locker"], "tel": "", "bewertung": 4.8, "zeiten": ["12:00-14:30,18:00-22:30", "12:00-14:30,18:00-22:30", "12:00-14:30,18:00-22:30", "12:00-14:30,18:00-22:30", "12:00-14:30,18:00-22:30", "12:00-14:30,18:00-22:30", "17:30-21:30"]},
+    {"name": "Yedo Ramen & Tapas", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Kappenstraße", "kueche": ["asiatisch"], "preis": 2, "vibe": ["locker", "gemuetlich"], "tel": "+4968188389380", "bewertung": 4.7, "zeiten": ["11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-23:30", "11:30-23:30", "11:30-22:30"]},
+    {"name": "ZENKO", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Reichsstraße", "kueche": ["sushi", "asiatisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968140107003", "bewertung": 4.7, "zeiten": ["11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00", "11:30-22:00", "12:00-22:00", "12:00-21:30"]},
+    {"name": "Le Comptoir", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Försterstraße · Fine Dining", "kueche": ["französisch"], "preis": 4, "vibe": ["schick"], "tel": "+4968183907886", "bewertung": 4.8, "zeiten": ["", "18:30-23:30", "18:30-23:30", "18:30-23:30", "18:30-23:30", "18:30-23:30", ""]},
+    {"name": "Memory Burger", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Ufergasse", "kueche": ["burger"], "preis": 2, "vibe": ["locker"], "tel": "+4968192799911", "bewertung": 4.8, "zeiten": ["12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-23:00", "12:00-23:00", "12:00-22:00"]},
+    {"name": "Die Burgerei", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Fröschengasse", "kueche": ["burger"], "preis": 2, "vibe": ["locker"], "tel": "+4968150062400", "bewertung": 4.5, "zeiten": ["12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-22:00", "14:00-21:00"]},
+    {"name": "Sneaky", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Kaltenbachstraße · Burger & Tacos", "kueche": ["burger", "mexikanisch"], "preis": 2, "vibe": ["locker"], "tel": "", "bewertung": 4.5, "zeiten": ["", "12:00-22:00", "12:00-22:00", "12:00-22:00", "12:00-24:00", "12:00-24:00", ""]},
+    {"name": "Café Especial", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Kronenstraße · Bar", "kueche": ["mexikanisch"], "preis": 2, "vibe": ["locker"], "tel": "+496813906619", "bewertung": 4.3, "zeiten": ["11:30-24:00", "11:30-24:00", "11:30-24:00", "11:30-24:00", "11:30-25:00", "11:30-25:00", "12:00-24:00"]},
+    {"name": "El Sombrero", "ort": "Saarbrücken", "gegend": "Saarbrücken", "lage": "Hohenzollernstraße", "kueche": ["mexikanisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+496815846962", "bewertung": 4.3, "zeiten": ["", "17:30-22:30", "17:30-22:30", "17:30-22:30", "17:30-22:30", "16:00-23:30", ""]},
     // --- Umgebung ---
-    { name: "Omakase", ort: "Dillingen", gegend: "Umgebung", lage: "Stummstraße", kueche: ["sushi", "asiatisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968315057520", bewertung: 4.8 },
-    { name: "Francescas Pasta", ort: "Völklingen", gegend: "Umgebung", lage: "Bismarckstraße", kueche: ["italienisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968984969551", bewertung: 4.7 },
-    { name: "Urfa Sofrasi", ort: "Völklingen", gegend: "Umgebung", lage: "Geislautern", kueche: ["türkisch"], preis: 2, vibe: ["locker"], tel: "+4968988703993", bewertung: 4.7 },
-    { name: "Mersin Tantuni", ort: "Völklingen", gegend: "Umgebung", lage: "Marktstraße", kueche: ["türkisch"], preis: 1, vibe: ["locker"], tel: "+491726326986", bewertung: 4.9 },
-    { name: "Taj Tandoori", ort: "Schwalbach", gegend: "Umgebung", lage: "Sebastianstraße", kueche: ["indisch"], preis: 2, vibe: ["gemuetlich"], tel: "+4968349616300", bewertung: 4.6 },
-    { name: "Spice Lounge", ort: "Mandelbachtal", gegend: "Umgebung", lage: "Vichter Straße", kueche: ["indisch"], preis: 2, vibe: ["schick"], tel: "+4968033910000", bewertung: 4.8 },
-    { name: "Gucky's Burger", ort: "Ensdorf", gegend: "Umgebung", lage: "Walter-von-Rathenau-Str.", kueche: ["burger"], preis: 2, vibe: ["locker"], tel: "+4917642291205", bewertung: 5.0 },
-    { name: "Day n Night", ort: "Völklingen", gegend: "Umgebung", lage: "Rathausstraße", kueche: ["burger"], preis: 2, vibe: ["locker"], tel: "+4968987950980", bewertung: 4.7 }
+    {"name": "Omakase", "ort": "Dillingen", "gegend": "Umgebung", "lage": "Stummstraße", "kueche": ["sushi", "asiatisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968315057520", "bewertung": 4.8, "zeiten": ["", "11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-22:30", "11:30-22:30"]},
+    {"name": "Capizzi Napoletana", "ort": "Dillingen", "gegend": "Umgebung", "lage": "Römerstraße · Neapolitanische Pizza", "kueche": ["italienisch"], "preis": 2, "vibe": ["locker"], "tel": "+4915566064074", "bewertung": 4.8, "zeiten": ["", "", "17:30-22:00", "17:30-22:00", "17:30-23:00", "17:30-23:00", "15:00-21:00"]},
+    {"name": "Ristorante Trevi", "ort": "Dillingen", "gegend": "Umgebung", "lage": "Johannesstraße", "kueche": ["italienisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968319522022", "bewertung": 4.6, "zeiten": ["", "11:30-15:00,17:00-22:00", "11:30-15:00,17:00-22:00", "11:30-15:00,17:00-22:00", "11:30-15:00,17:00-22:00", "14:00-22:00", "12:00-22:00"]},
+    {"name": "La Bécasse", "ort": "Dillingen", "gegend": "Umgebung", "lage": "Berckheimstraße", "kueche": ["französisch"], "preis": 3, "vibe": ["schick"], "tel": "+49683160147", "bewertung": 4.6, "zeiten": ["", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "11:30-14:00,18:00-22:00", "18:00-22:00", "11:30-14:00"]},
+    {"name": "Francescas Pasta", "ort": "Völklingen", "gegend": "Umgebung", "lage": "Bismarckstraße", "kueche": ["italienisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968984969551", "bewertung": 4.7, "zeiten": ["", "17:30-21:30", "17:30-21:30", "17:30-21:30", "17:30-21:30", "17:30-21:30", "17:30-21:30"]},
+    {"name": "Urfa Sofrasi", "ort": "Völklingen", "gegend": "Umgebung", "lage": "Geislautern", "kueche": ["türkisch"], "preis": 2, "vibe": ["locker"], "tel": "+4968988703993", "bewertung": 4.7, "zeiten": ["15:00-23:00", "15:00-23:00", "", "15:00-23:00", "15:00-23:00", "11:00-23:00", "11:00-23:00"]},
+    {"name": "Mersin Tantuni", "ort": "Völklingen", "gegend": "Umgebung", "lage": "Marktstraße", "kueche": ["türkisch"], "preis": 1, "vibe": ["locker"], "tel": "+491726326986", "bewertung": 4.9, "zeiten": ["", "11:00-22:00", "11:00-22:00", "11:00-22:00", "11:00-22:00", "11:00-22:00", "11:00-22:00"]},
+    {"name": "Day n Night", "ort": "Völklingen", "gegend": "Umgebung", "lage": "Rathausstraße", "kueche": ["burger"], "preis": 2, "vibe": ["locker"], "tel": "+4968987950980", "bewertung": 4.7, "zeiten": ["11:00-24:00", "11:00-24:00", "11:00-24:00", "11:00-24:00", "11:00-25:00", "14:00-25:00", "14:00-24:00"]},
+    {"name": "Taj Tandoori", "ort": "Schwalbach", "gegend": "Umgebung", "lage": "Sebastianstraße", "kueche": ["indisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+4968349616300", "bewertung": 4.6, "zeiten": ["11:30-14:30,17:30-22:30", "", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "11:30-14:30,17:30-22:30", "17:30-22:30", "11:30-14:30,17:30-22:30"]},
+    {"name": "Schwalbacher Hof", "ort": "Schwalbach", "gegend": "Umgebung", "lage": "Hauptstraße", "kueche": ["saarländisch"], "preis": 2, "vibe": ["gemuetlich"], "tel": "+49683455580", "bewertung": 4.7, "zeiten": ["", "12:00-14:00", "12:00-14:00,18:00-22:00", "12:00-14:00,18:00-22:00", "12:00-14:00,18:00-22:00", "12:00-14:00,18:00-22:00", "12:00-14:00,18:00-22:00"]},
+    {"name": "Landhaus Thea", "ort": "Schwalbach-Elm", "gegend": "Umgebung", "lage": "Köllner Straße", "kueche": ["saarländisch"], "preis": 3, "vibe": ["schick", "gemuetlich"], "tel": "+49683454775", "bewertung": 4.5, "zeiten": ["", "", "11:00-14:00,18:00-21:00", "11:00-14:00,18:00-21:00", "11:00-14:00,18:00-21:00", "18:00-21:00", "11:00-18:00"]},
+    {"name": "Spice Lounge", "ort": "Mandelbachtal", "gegend": "Umgebung", "lage": "Vichter Straße", "kueche": ["indisch"], "preis": 2, "vibe": ["schick"], "tel": "+4968033910000", "bewertung": 4.8, "zeiten": ["", "16:00-22:00", "16:00-22:00", "16:00-22:00", "16:00-22:00", "16:00-22:00", "11:00-21:00"]},
+    {"name": "Gucky's Burger", "ort": "Ensdorf", "gegend": "Umgebung", "lage": "Walter-von-Rathenau-Str.", "kueche": ["burger"], "preis": 2, "vibe": ["locker"], "tel": "+4917642291205", "bewertung": 5.0, "zeiten": ["14:00-22:00", "14:00-22:00", "14:00-22:00", "14:00-22:00", "14:00-22:00", "14:00-22:00", ""]}
   ];
   // =====================================================================
 
@@ -764,12 +774,38 @@
   }
   function budgetLevel(v) { return v ? (v.match(/€/g) || []).length : 0; }
 
+  // --- Öffnungszeiten ---
+  const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const minToStr = (m) => `${pad2(Math.floor(m / 60) % 24)}:${pad2(m % 60)}`;
+  function dayIndex(iso) { // 0 = Mo … 6 = So
+    const [y, m, d] = iso.split("-").map(Number);
+    return (new Date(y, m - 1, d).getDay() + 6) % 7;
+  }
+  // Ist das Restaurant zur Zeit offen – und noch mind. 75 Min. bis Küchenschluss?
+  function openInfo(r, iso, time) {
+    if (!r.zeiten || !iso || !time) return null;
+    const t = toMin(time);
+    const check = (dayStr, offset) => {
+      for (const rng of (dayStr || "").split(",").filter(Boolean)) {
+        const [a, b] = rng.split("-").map(toMin);
+        if (t + offset >= a && t + offset + 75 <= b) return { open: true, until: minToStr(b) };
+      }
+      return null;
+    };
+    const di = dayIndex(iso);
+    // auch Öffnungszeiten vom Vortag, die über Mitternacht gehen
+    return check(r.zeiten[di], 0) || check(r.zeiten[(di + 6) % 7], 24 * 60) ||
+      { open: false, closedDay: !r.zeiten[di] };
+  }
+
   function recommend(data) {
     const areas = (data.gegend || []).filter((g) => g !== "Egal");
     const cuisines = (data.kueche || []).map(cuisineKey).filter((k) => k !== "überrasch mich");
     const budget = budgetLevel(data.budget);
     const vibe = vibeKey(data.vibe);
 
+    const when = String(data.zeit || "").match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})$/);
+    const isOpen = (r) => !when || openInfo(r, when[1], when[2]).open;
     const inArea = (r) => areas.length === 0 || areas.includes(r.gegend);
     const cuisineOk = (r) => cuisines.length === 0 || r.kueche.some((k) => cuisines.includes(k));
     const budgetOk = (r) => !budget || r.preis <= (budget === 3 ? 4 : budget);
@@ -780,19 +816,20 @@
 
     // Stufenweise lockern, falls nichts passt
     const steps = [
-      { filter: (r) => inArea(r) && cuisineOk(r) && budgetOk(r), note: "" },
-      { filter: (r) => inArea(r) && cuisineOk(r), note: "Nichts im Budget gefunden – hier passende Küche, etwas teurer:" },
-      { filter: (r) => cuisineOk(r) && budgetOk(r), note: "In der Gegend gibt's die Küche nicht – hier in der Nähe:" },
-      { filter: (r) => inArea(r) && budgetOk(r), note: "Die Küche gibt's dort nicht – hier Alternativen in der Gegend:" }
+      { filter: (r) => isOpen(r) && inArea(r) && cuisineOk(r) && budgetOk(r), note: "" },
+      { filter: (r) => isOpen(r) && inArea(r) && cuisineOk(r), note: "Nichts im Budget gefunden – hier passende Küche, etwas teurer:" },
+      { filter: (r) => isOpen(r) && cuisineOk(r) && budgetOk(r), note: "In der Gegend hat zu der Zeit nichts Passendes offen – hier in der Nähe:" },
+      { filter: (r) => isOpen(r) && inArea(r) && budgetOk(r), note: "Die Küche hat dort zu der Zeit nichts offen – hier Alternativen in der Gegend:" },
+      { filter: (r) => inArea(r) && cuisineOk(r), note: "⚠️ Zur gewählten Zeit hat laut Google keins offen – lieber anrufen oder Uhrzeit ändern:" }
     ];
     for (const step of steps) {
       const hits = RESTAURANTS.filter(step.filter);
       if (hits.length) {
         hits.sort((a, b) => score(b) - score(a));
-        return { list: hits.slice(0, 6), note: step.note, vibe };
+        return { list: hits.slice(0, 6), note: step.note, vibe, when };
       }
     }
-    return { list: [], note: "", vibe };
+    return { list: [], note: "", vibe, when };
   }
 
   let chosenResto = null;
@@ -805,7 +842,7 @@
   }
 
   function renderRecommendations(el, data) {
-    const { list, note, vibe } = recommend(data);
+    const { list, note, vibe, when } = recommend(data);
     el.innerHTML = "";
     el.classList.remove("hidden");
     const step = document.createElement("span");
@@ -854,6 +891,16 @@
       meta.className = "resto-meta";
       meta.textContent = `${r.ort} · ${r.lage}`;
       card.append(head, meta);
+      if (when) {
+        const oi = openInfo(r, when[1], when[2]);
+        if (oi) {
+          const o = document.createElement("div");
+          o.className = "resto-why";
+          o.textContent = oi.open ? `🕘 ${fmtDate(when[1])} geöffnet bis ${oi.until} Uhr`
+            : oi.closedDay ? "⛔ An dem Tag Ruhetag" : "⚠️ Zu der Uhrzeit geschlossen";
+          card.appendChild(o);
+        }
+      }
       if (vibe && r.vibe.includes(vibe)) {
         const why = document.createElement("div");
         why.className = "resto-why";
