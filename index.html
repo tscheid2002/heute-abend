@@ -653,7 +653,7 @@
       </div>
      </div>
 
-      <button class="btn" type="submit">Fertig – abschicken 💌</button>
+      <button class="btn" type="submit" id="submitBtn">Fertig – abschicken 💌</button>
       <p class="error" id="error"></p>
     </form>
   </section>
@@ -662,10 +662,10 @@
   <section id="sentView" class="hidden">
     <header>
       <div class="emoji-big">💌</div>
-      <h1>Fast geschafft!</h1>
+      <h1 id="sentTitle">Fast geschafft!</h1>
       <p class="sub" id="sentSub">Schick mir deine Auswahl mit einem Tipp:</p>
     </header>
-    <div class="card">
+    <div class="card" id="manualCard">
       <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">Per WhatsApp schicken</a>
       <button class="btn secondary" id="shareBtn" type="button">Anders teilen / Link kopieren</button>
     </div>
@@ -699,6 +699,9 @@
   const CONFIG = {
     deinName: "Tobias",      // z. B. "Tobias" → erscheint im Text ("Schick Tobias deine Auswahl")
     ihrName: "Emelie",       // z. B. "Lena"   → erscheint in der Begrüßung
+    // Automatisch per E-Mail an dich (kostenlos über web3forms.com):
+    // Schlüssel hier eintragen → sie tippt nur „Abschicken“, du bekommst eine Mail.
+    web3formsKey: "",
     whatsappNummer: "" // optional: deine Nummer mit Ländervorwahl, ohne + und Leerzeichen, z. B. "4917612345678"
   };
   // =======================================
@@ -1396,6 +1399,7 @@
   }
   if (CONFIG.deinName) {
     $("sentSub").textContent = `Schick ${CONFIG.deinName} deine Auswahl mit einem Tipp:`;
+    $("submitBtn").textContent = `Abschicken an ${CONFIG.deinName} 💌`;
     $("waBtn").textContent = `Per WhatsApp an ${CONFIG.deinName}`;
   }
   if (CONFIG.ihrName) {
@@ -1429,6 +1433,7 @@
     const text = summaryText(data) + "\n\nAlles auf einen Blick: " + link;
     const waBase = CONFIG.whatsappNummer ? `https://wa.me/${CONFIG.whatsappNummer}` : "https://wa.me/";
     $("waBtn").href = `${waBase}?text=${encodeURIComponent(text)}`;
+    if (CONFIG.web3formsKey) sendMail(data, link);
     renderCard($("previewCard"), data);
     $("moreBtns").innerHTML = "";
     Object.entries(PAGES).forEach(([k, p]) => {
@@ -1442,6 +1447,39 @@
     });
     show("sentView");
   });
+
+  // --- Automatisch per E-Mail senden ---
+  async function sendMail(data, link) {
+    const wer = CONFIG.deinName || "mir";
+    $("manualCard").classList.add("hidden");
+    $("sentTitle").textContent = "Wird gesendet …";
+    $("sentSub").textContent = "Einen Moment ✨";
+    const titles = SECTIONS.filter((s) => hasAny(data, s)).map((s) => s.title).join(" + ");
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: CONFIG.web3formsKey,
+          subject: `💌 ${CONFIG.ihrName || "Neue Auswahl"}: ${titles}`,
+          from_name: CONFIG.ihrName ? `${CONFIG.ihrName} (Heute Abend)` : "Heute Abend",
+          "Auswahl": summaryText(data).replace(/\n\n🔍 Passende Restaurants findest du im Link 👇$/, ""),
+          "👉 Öffnen (Restaurant wählen & Kalender)": link,
+          botcheck: ""
+        })
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.success === false) throw new Error(json.message || res.status);
+      $("sentTitle").textContent = "Abgeschickt! 💌";
+      $("sentSub").textContent = CONFIG.deinName
+        ? `${CONFIG.deinName} hat deine Auswahl bekommen und meldet sich 😊`
+        : "Deine Auswahl ist angekommen 😊";
+    } catch (err) {
+      $("sentTitle").textContent = "Fast geschafft!";
+      $("sentSub").textContent = `Automatisch senden hat gerade nicht geklappt – schick's ${wer} hier mit einem Tipp:`;
+      $("manualCard").classList.remove("hidden");
+    }
+  }
 
   $("shareBtn").addEventListener("click", async () => {
     if (!current) return;
